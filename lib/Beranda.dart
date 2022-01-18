@@ -223,7 +223,8 @@ class _BerandaState extends State<Beranda> with WidgetsBindingObserver {
                                                   ),
                                                 ),
                                                 GenText(
-                                                    "Stock: " + 5.toString()),
+                                                    e["stock"] == null ? "Stock : 0" :
+                                                    "Stock: " +  e["stock"]["qty"].toString()),
                                               ],
                                             ),
                                             Row(

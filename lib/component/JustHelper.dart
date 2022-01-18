@@ -325,7 +325,7 @@ Future<String> cekRoles() async {
 }
 
 //VALIDATION
-String validateMobile(String value) {
+String validatebarange(String value) {
   String patttern = r'(^(?:[+0]9)?[0-9]{10,30}$)';
   RegExp regExp = new RegExp(patttern);
   if (regExp.hasMatch(value)) {

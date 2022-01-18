@@ -43,19 +43,17 @@ class _KeluarState extends State<Keluar> with WidgetsBindingObserver {
 //  double currentgurulainValue = 0;
   PageController gurulainController = PageController();
   var stateMetodBelajar = 1;
-  var bloc, dataProperty;
+  var bloc, dataBarang;
   var clientId;
   var stateHari;
   var dariValue, keValue, totalpenumpang;
   dynamic dataUser;
-  dynamic dataTransaksi;
 
   @override
   void initState() {
     // TODO: implement initState
     // analytics.
-    getUser();
-    getTransaksi();
+    getBarangKeluar();
 
     WidgetsBinding.instance.addObserver(this);
     super.initState();
@@ -80,32 +78,15 @@ class _KeluarState extends State<Keluar> with WidgetsBindingObserver {
 
     ScreenUtil.init(
         BoxConstraints(
-            maxWidth: MediaQuery
-                .of(context)
-                .size
-                .width,
-            maxHeight: MediaQuery
-                .of(context)
-                .size
-                .height),
+            maxWidth: MediaQuery.of(context).size.width,
+            maxHeight: MediaQuery.of(context).size.height),
         designSize: Size(360, 690),
         orientation: Orientation.portrait);
     bloc = Provider.of<BaseBloc>(context);
-    // notifbloc = Provider.of<NotifBloc>(context);
-
-    // sendAnalyticsEvent(testLogAnalytic);
-    // print("anal itik "+testLogAnalytic);
 
     if (!isLoaded) {
       isLoaded = true;
     }
-
-    // notifbloc.getTotalNotif();
-
-    // bloc.util.getActiveOnline();
-    // bloc.util.getNotifReview();
-
-    // bloc.util.getRekomendasiAll("district", "level", 1, "limit", "offset");
 
     return Scaffold(
       drawer: NavDrawer(),
@@ -113,231 +94,98 @@ class _KeluarState extends State<Keluar> with WidgetsBindingObserver {
         centerTitle: true,
         backgroundColor: GenColor.primaryColor,
         elevation: 0,
-        actions: <Widget>[
-          Padding(
-              padding: EdgeInsets.only(right: 20.0),
-              child: GestureDetector(
-                onTap: () {
-                  // Navigator.pushNamed(context, "notifikasi", arguments: );
-                },
-                child: Row(
-                  children: [
-                    InkWell(
-                      onTap: () {
-                        Navigator.pushNamed(context, "keranjang");
-                      },
-                      child: Icon(
-                        Icons.shopping_cart_outlined,
-                        size: 26.0,
-                      ),
-                    ),
-                  ],
-                ),
-              )),
-        ],
       ),
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-
             Expanded(
-              child: SingleChildScrollView(
+              child: dataBarang == null
+                  ? Center(child: CircularProgressIndicator())
+                  : SingleChildScrollView(
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    SizedBox(
-                      height: 30,
-                    ),
-                    CommonPadding(
-                      child: GenText(
-                        "Tanggal: 10 januari 2022",
-                        style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.black45),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-
-                    CommonPadding(
-                      child: Column(
+                    Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          InkWell(
-                            onTap: (){
-                              // Navigator.pushNamed(context, "inputSyarat", arguments: InputSyarat(
-                              //   id: "1",
-                              // ));
-                            },
-                            child: Container(
-                              margin: EdgeInsets.only(bottom: 10),
-                              width: double.infinity,
-                              padding: EdgeInsets.all(20),
-                              decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  boxShadow: [
-                                    BoxShadow(
-                                        blurRadius: 2,
-                                        color: Colors.black12
-                                    )
-                                  ]
+                        children: dataBarang.map<Widget>((e) {
+                          return Column(
+                            children: [
+                              SizedBox(
+                                height: 30,
                               ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  TextRowBetween(leftText: "Nama Barang", rightText: "20 pcs",),
-                                  GenText("Saos ABC"),
-
-                                ],
+                              CommonPadding(
+                                child: GenText(
+                                  "Tanggal:" + e["tanggal"],
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.black45),
+                                ),
                               ),
-                            ),
-                          ),
-
-                        ],
-                      ),
-                    ),
-                    CommonPadding(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          InkWell(
-                            onTap: (){
-                              // Navigator.pushNamed(context, "inputSyarat", arguments: InputSyarat(
-                              //   id: "1",
-                              // ));
-                            },
-                            child: Container(
-                              margin: EdgeInsets.only(bottom: 10),
-                              width: double.infinity,
-                              padding: EdgeInsets.all(20),
-                              decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  boxShadow: [
-                                    BoxShadow(
-                                        blurRadius: 2,
-                                        color: Colors.black12
-                                    )
-                                  ]
+                              SizedBox(
+                                height: 20,
                               ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  TextRowBetween(leftText: "Nama Barang", rightText: "20 pcs",),
-                                  GenText("Saos ABC"),
+                              CommonPadding(
+                                  child: Column(
+                                      crossAxisAlignment:
+                                      CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                      MainAxisAlignment.start,
+                                      children: e["data"]
+                                          .map<Widget>((i) {
+                                        return InkWell(
+                                          onTap: () {
+                                            // Navigator.pushNamed(context, "inputSyarat", arguments: InputSyarat(
+                                            //   id: "1",
+                                            // ));
+                                          },
+                                          child: Container(
+                                            margin: EdgeInsets.only(
+                                                bottom: 10),
+                                            width: double.infinity,
+                                            padding: EdgeInsets.all(20),
+                                            decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                      blurRadius: 2,
+                                                      color:
+                                                      Colors.black12)
+                                                ]),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                              CrossAxisAlignment
+                                                  .start,
+                                              children: [
+                                                TextRowBetween(
+                                                  leftText: "nama Barang",
+                                                  rightText: "qty : " + i["qty"].toString(),
+                                                ),
+                                                GenText(i["barang"]["nama"]),
+                                                SizedBox(height: 10,),
+                                                TextRowBetween(
+                                                  leftText: "Keterangan",
+                                                  rightText: "",
+                                                ),
+                                                GenText(i["keterangan"]),
+                                              ],
 
-                                ],
-                              ),
-                            ),
-                          ),
+                                            ),
+                                          ),
+                                        );
+                                      }).toList())),
+                            ],
+                          );
+                        }).toList()),
 
-                        ],
-                      ),
-                    )
-                    ,
-                    SizedBox(
-                      height: 30,
-                    ),
-                    CommonPadding(
-                      child: GenText(
-                        "Tanggal: 9 januari 2022",
-                        style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.black45),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-
-                    CommonPadding(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          InkWell(
-                            onTap: (){
-                              // Navigator.pushNamed(context, "inputSyarat", arguments: InputSyarat(
-                              //   id: "1",
-                              // ));
-                            },
-                            child: Container(
-                              margin: EdgeInsets.only(bottom: 10),
-                              width: double.infinity,
-                              padding: EdgeInsets.all(20),
-                              decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  boxShadow: [
-                                    BoxShadow(
-                                        blurRadius: 2,
-                                        color: Colors.black12
-                                    )
-                                  ]
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  TextRowBetween(leftText: "Nama Barang", rightText: "20 pcs",),
-                                  GenText("Saos ABC"),
-
-                                ],
-                              ),
-                            ),
-                          ),
-
-                        ],
-                      ),
-                    ),
-                    CommonPadding(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          InkWell(
-                            onTap: (){
-                              // Navigator.pushNamed(context, "inputSyarat", arguments: InputSyarat(
-                              //   id: "1",
-                              // ));
-                            },
-                            child: Container(
-                              margin: EdgeInsets.only(bottom: 10),
-                              width: double.infinity,
-                              padding: EdgeInsets.all(20),
-                              decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  boxShadow: [
-                                    BoxShadow(
-                                        blurRadius: 2,
-                                        color: Colors.black12
-                                    )
-                                  ]
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  TextRowBetween(leftText: "Nama Barang", rightText: "20 pcs",),
-                                  GenText("Saos ABC"),
-
-                                ],
-                              ),
-                            ),
-                          ),
-
-                        ],
-                      ),
-                    )
-                    ,
                     Container(
                       height: 200,
-                      child: dataProperty == null
+                      child: dataBarang == null
                           ? Container()
-                          : dataProperty.length == 0
+                          : dataBarang.length == 0
                           ? Center(
-                        child: GenText("Tidak ada mobil tersedia"),
+                        child:
+                        GenText("Tidak ada barang tersedia"),
                       )
                           : SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
@@ -347,8 +195,6 @@ class _KeluarState extends State<Keluar> with WidgetsBindingObserver {
                         ),
                       ),
                     ),
-
-
                   ],
                 ),
               ),
@@ -361,17 +207,18 @@ class _KeluarState extends State<Keluar> with WidgetsBindingObserver {
 
   void getUser() async {
     print("data usernya :");
-    dataUser = await req.postApiuseAuth("user", {});
+    dataUser = await req.getApi("user");
 
     print(dataUser);
     setState(() {});
   }
 
-  void getTransaksi() async {
-    dataTransaksi = await req.getApi("barang-keluar");
+  void getBarangKeluar() async {
+    dataBarang = await req.getApi("barang-keluar");
 
-    print("DATA $dataTransaksi");
-    print("length" + dataTransaksi.length.toString());
+    dataBarang = dataBarang["payload"];
+    print("DATA $dataBarang");
+    print("length" + dataBarang.length.toString());
 
     setState(() {});
   }

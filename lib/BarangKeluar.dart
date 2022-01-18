@@ -243,7 +243,7 @@ class _DetailBarangKeluarState extends State<DetailBarangKeluar>
                     initVal: "",
                     width: double.infinity,
                     label: "Keterangan",
-                    keyboardType: TextInputType.number,
+                    keyboardType: TextInputType.text,
 //                                    controller: tecNumber,
                     onChanged: (val) {
                       keterangan = val;
@@ -351,7 +351,7 @@ class _DetailBarangKeluarState extends State<DetailBarangKeluar>
     });
 
     dynamic data;
-    data = await req.postForm("keranjang", {"barang" : id, "qty": qty});
+    data = await req.postForm("barang-keluar", {"barang" : id, "qty": qty, "keterangan": keterangan});
 
     print("DATA $data");
 
@@ -364,7 +364,7 @@ class _DetailBarangKeluarState extends State<DetailBarangKeluar>
 
     if (data["status"] == 200) {
       setState(() {
-        Navigator.pushReplacementNamed(context, "keranjang");
+        Navigator.pushReplacementNamed(context, "base");
         toastShow("Berhasil dimasukan ke keranjang", context,
             Colors.black);
       });

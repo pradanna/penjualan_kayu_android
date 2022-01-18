@@ -206,7 +206,7 @@ class _TransaksiState extends State<Transaksi> with WidgetsBindingObserver {
                           ? Container()
                           : dataProperty.length == 0
                           ? Center(
-                        child: GenText("Tidak ada mobil tersedia"),
+                        child: GenText("Tidak ada barang tersedia"),
                       )
                           : SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
@@ -325,7 +325,7 @@ class _TransaksiState extends State<Transaksi> with WidgetsBindingObserver {
                     //     ? Container()
                     //     : dataProperty.length == 0
                     //     ? Center(
-                    //   child: GenText("Tidak ada mobil tersedia"),
+                    //   child: GenText("Tidak ada barang tersedia"),
                     // )
                     //     : Column(children: dataProperty.map<Widget>((e) {
                     //   return CommonPadding(
